@@ -1,0 +1,59 @@
+<html>
+<head>
+    <title>اعادة توجية</title>
+</head>
+<body>
+    <style>
+        .main_card {
+            text-align: center;
+            margin-top: 100px;
+        }
+    </style>
+    <div class="main_card">
+        <div class="img"><img src="{{logo}}" /></div>
+        <div class="card">
+            <h2>جاري عملية المعالجة وإعادة التوجية فضلا إنتظر قليلاً</h2>
+            <h2>Processing and redirection is in progress, please wait a moment</h2>
+        </div>
+    </div>
+    <!-- Don't Change any code here -->
+    <script type="text/javascript" src="{{checkoutUrl}}"
+        data-error="{{get_site_url}}?wc-api={{error_link}}&order_id={{order_id}}"
+        data-cancel="{{get_site_url}}?wc-api={{cancel_link}}&order_id={{order_id}}"
+        data-complete="{{get_site_url}}?wc-api={{responce_link}}&order_id={{order_id}}">
+        </script>
+    <script type="text/javascript">
+        Checkout.configure({
+            merchant: '{{merchantId}}',
+            order: {
+                amount: '{{total}}',
+                currency: '{{currency}}',
+                description: '{{product_name}}',
+                id: '{{visa_order_id}}',
+                reference: '{{reference}}',
+            },
+            interaction: {
+                merchant: {
+                    name: '{{blogname}}',
+                    logo: '{{logo}}',
+                },
+                locale: '{{language}}',
+                displayControl: {
+                    billingAddress: 'HIDE',
+                    shipping: 'HIDE',
+                    customerEmail: 'HIDE',
+                    orderSummary: 'READ_ONLY',
+                },
+            },
+            session: {
+                id: '{{session_id}}',
+            }
+        });
+        //debugger;
+        Checkout.showPaymentPage();
+    </script>
+       <!--<input type="button" value="Pay with Lightbox" onclick="Checkout.showLightbox();" />
+       <input type="button" value="Pay with Payment Page" onclick="Checkout.showPaymentPage();" />-->
+    <!-- Don't Change any code here -->
+</body>
+</html>
