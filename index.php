@@ -452,11 +452,12 @@ if ( !class_exists( 'WC_Payment_Gateway' ) ) {return;}
             }
             // if not have order recevied page
             // redirect to order page
-            if( !is_wc_endpoint_url( 'order-received' ) )
+            $redirect = $this->get_return_url( $order );
+            if( is_wc_endpoint_url( 'order-received' ) )
             {
-                $redirect = $this->get_return_url( $order );
+                $redirect = $order->get_checkout_order_received_url();
             }
-            $redirect = $order->get_checkout_order_received_url();
+            
             if ( wp_redirect($redirect) ) { exit; }
         }
         private function set_order_notif($msg)
