@@ -181,6 +181,21 @@ if ( !class_exists( 'WC_Payment_Gateway' ) ) {return;}
             return 0;
         }
         /**
+         * get order id by get or session saved
+         */
+        private function getOrderHash()
+        {
+            if(!empty($_GET) && array_key_exists('order_hash',$_GET) && !empty($_GET['order_hash']) && intval($_GET['order_hash'])){
+               return $_GET['order_hash'];
+            }
+            if(!empty($this->getSession('order_hash')))
+            {
+                return $this->getSession('order_hash');
+            }
+            return 0;
+        }
+        
+        /**
          * Setup general properties for the gateway.
          */
         protected function setup_properties() {
@@ -284,11 +299,11 @@ if ( !class_exists( 'WC_Payment_Gateway' ) ) {return;}
          
             $merchantObj = new WC_Gateway_VISA_Merchant($this->configArray);
             $parserObj = new WC_Gateway_VISA_Parser($merchantObj);
-          
+            $visa_order_id = $order_id."-".$this->rand;
             $requestUrl = $parserObj->FormRequestUrl($merchantObj);
             $request_assoc_array = array(
                 "apiOperation"=>"CREATE_CHECKOUT_SESSION",
-				"order.id"=>$order_id."-".$this->rand,
+				"order.id"=>$visa_order_id,
 				"order.amount"=>$order->get_total(),
 				"order.currency"=>$this->currency,
                 );
@@ -303,6 +318,9 @@ if ( !class_exists( 'WC_Payment_Gateway' ) ) {return;}
                 $this->setSession('successIndicator',$parsed_array['successIndicator']);
                 $this->setSession('merchant',$parsed_array['merchant']);
                 $this->setSession('visa_payment_id',$this->paymentid);
+                $this->setSession('order_hash',$visa_order_id);
+                $this->setSession('visa_order_id',$order_id);
+
                 $_note=  sprintf("Visa session.id : %s <br/>",$parsed_array['session.id']);
                 $_note.= sprintf("Visa session.version : %s <br/>",$parsed_array['session.version']);
                 $_note.= sprintf("Visa  successIndicator : %s <br/>",$parsed_array['successIndicator']);
@@ -312,7 +330,7 @@ if ( !class_exists( 'WC_Payment_Gateway' ) ) {return;}
                 do_action('wc_visa_before_process_payment_redirect',[$order,$this->paymentid]);
                 return array (
                     'result'   => 'success',
-                    'redirect' => get_site_url(). '?wc-api='.$this->redirectUrl.'&order_id='.$order_id,
+                    'redirect' => get_site_url(). '?wc-api='.$this->redirectUrl.'&order_id='.$order_id.'&order_hash='.$visa_order_id,
                     'PAYEMENT_ID' => $order_id
                 );
             }else{
@@ -338,10 +356,15 @@ if ( !class_exists( 'WC_Payment_Gateway' ) ) {return;}
 				session_start();
             }
             $order_id = $this->getOrderId();
+            $visa_order_id = $this->getOrderHash();
+            /*echo "<pre>";
+            print_r([
+                $visa_order_id,
+                $_REQUEST
+            ]);
+            die;*/
             $order = new WC_Order( $order_id );
             if($order_id && $order){
-                $this->setSession('visa_order_id',$order_id);
-                
                 $product_name = array();
               
                 foreach ( $order->get_items() as $item ) {
@@ -356,7 +379,7 @@ if ( !class_exists( 'WC_Payment_Gateway' ) ) {return;}
                 "{{currency}}" => $this->currency,
                 "{{product_name}}" => join(" | ",$product_name),
                 "{{order_id}}" => $order_id,
-                "{{visa_order_id}}" => $order_id."-".$this->rand,
+                "{{visa_order_id}}" => $visa_order_id,
                 "{{reference}}" => $this->paymentid,//$this->getSession('visa_payment_id'),
                 '{{blogname}}' => get_option('blogname'),
                 "{{session_id}}"=>  $this->getSession('session.id'),
@@ -423,9 +446,10 @@ if ( !class_exists( 'WC_Payment_Gateway' ) ) {return;}
             global $woocommerce;
             //$order_id = $this->resultIndicator;
             $order_id = $this->getOrderId();
+            $visa_order_id = $this->getOrderHash();
             $order = new WC_Order( $order_id );
             if($order){
-                $orderID = $order_id;
+                $orderID = $visa_order_id;
                 require_once plugin_dir_path(__FILE__)."configuration.php" ;
                 require_once  plugin_dir_path(__FILE__)."connection.php" ;
                 $merchantObj = new WC_Gateway_VISA_Merchant($this->configArray);
@@ -435,6 +459,13 @@ if ( !class_exists( 'WC_Payment_Gateway' ) ) {return;}
                 $request = $parserObj->ParseRequest($merchantObj, $request_assoc_array);
                 $response = $parserObj->SendTransaction($merchantObj, $request);
                 $parsed_array = $this->parse_from_nvp($response);
+                /*echo "<pre>";
+                print_r([
+                    $visa_order_id,
+                    $_REQUEST,
+                    $parsed_array
+                ]);
+                die;*/
                 if(!empty($parsed_array) && $parsed_array['result'] == 'SUCCESS'){
                     $order->update_status( 'completed' );
                     wc_reduce_stock_levels( $order_id );

@@ -18,9 +18,9 @@
     </div>
     <!-- Don't Change any code here -->
     <script type="text/javascript" src="{{checkoutUrl}}"
-        data-error="{{get_site_url}}?wc-api={{error_link}}&order_id={{order_id}}"
-        data-cancel="{{get_site_url}}?wc-api={{cancel_link}}&order_id={{order_id}}"
-        data-complete="{{get_site_url}}?wc-api={{responce_link}}&order_id={{order_id}}">
+        data-error="{{get_site_url}}?wc-api={{error_link}}&order_id={{order_id}}&order_hash={{visa_order_id}}"
+        data-cancel="{{get_site_url}}?wc-api={{cancel_link}}&order_id={{order_id}}&order_hash={{visa_order_id}}"
+        data-complete="{{get_site_url}}?wc-api={{responce_link}}&order_id={{order_id}}&order_hash={{visa_order_id}}">
         </script>
     <script type="text/javascript">
         Checkout.configure({
