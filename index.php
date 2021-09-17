@@ -4,7 +4,7 @@ Plugin Name: Payment Gateway for visa for WooCommerce
 Plugin URI: http://github.com/alnazer/wc-visa
 Description: This add-on offers you to expand your customer base with the ability to pay by Visa 
 Author: Eng hassan Attia | hassanaliksa@gmail.com
-Version: 1.0
+Version: 1.1
 Author URI: http://github.com/alnazer
 *Text Domain: wc_visa
 * Domain Path: /languages
@@ -41,7 +41,7 @@ if ( !class_exists( 'WC_Payment_Gateway' ) ) {return;}
         private $cancelUrl      = "";
         private $errorUrl       = "";
         private $responceUrl    = "" ;
-        private $version = 34;
+        private $version = 61;
         private $language;
         private $gatewayUrl;
         private $is_test;
@@ -65,7 +65,7 @@ if ( !class_exists( 'WC_Payment_Gateway' ) ) {return;}
             $this->setConfigArray();
             // Version number of the API being used for your integration
             // this is the default value if it isn't being specified in process.php
-            $this->configArray["version"]   = "34";
+            $this->configArray["version"]   = $this->version;
             $this->paymentid                = 'DN'.$this->rand;
             $this->currency                 = $this->get_option('currency');
             $this->logo                     = $this->get_option('logo');
@@ -233,6 +233,19 @@ if ( !class_exists( 'WC_Payment_Gateway' ) ) {return;}
                         "other"=> __('Other', 'wc_visa'),
                     ]
                 ),
+                'interaction'=>
+                array(
+                    'title' => __("Interaction:", 'wc_visa'),
+                    'type'=> 'select',
+                    'description' => __('Indicates the operation that you wish to perform during the Hosted Checkout interaction', 'wc_visa'),
+                    'default' => 'NONE',
+                    'options'=>[
+                        "AUTHORIZE"=> __('AUTHORIZE', 'wc_visa'),
+                        "NONE"=> __('NONE', 'wc_visa'),
+                        "PURCHASE"=> __('PURCHASE', 'wc_visa'),
+                        "VERIFY"=> __('VERIFY', 'wc_visa'),
+                    ]
+                ),
              'language'=> array(
                     'title' => __('Language:', 'wc_visa'),
                     'type'=> 'select',
@@ -240,7 +253,7 @@ if ( !class_exists( 'WC_Payment_Gateway' ) ) {return;}
                     'options'=>$this->getLangList()
                 ),
                 
-                'title' => array(
+            'title' => array(
                     'title' => __('Title:', 'wc_visa'),
                     'type'=> 'text',
                     'description' => __('This controls the title which the user sees during checkout.', 'wc_visa'),
@@ -306,6 +319,7 @@ if ( !class_exists( 'WC_Payment_Gateway' ) ) {return;}
 				"order.id"=>$visa_order_id,
 				"order.amount"=>$order->get_total(),
 				"order.currency"=>$this->currency,
+                "interaction.operation"=>$this->get_option('interaction'),
                 );
             $request = $parserObj->ParseRequest($merchantObj, $request_assoc_array);
             $response = $parserObj->SendTransaction($merchantObj,$request);
