@@ -38,7 +38,7 @@ You can add custom style for redirect page in redirect-page.html
 2-Don't make javascript code mistake it will stoped redirection
 3- Don't forget backup from page
 
-## support
+##support
 Eng hassan Attia | hassanaliksa@gmail.com | +96590033807
 
 
