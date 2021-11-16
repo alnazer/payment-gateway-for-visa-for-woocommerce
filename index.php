@@ -3,7 +3,8 @@
 Plugin Name: Payment Gateway for VISA
 Plugin URI: https://github.com/alnazer/payment-gateway-for-visa-for-woocommerce
 Description: This add-on offers you to expand your customer base with the ability to pay by Visa 
-Author: hassan
+Author: alnazer
+Contributors: alnazer
 Version: 1.1.1
 Author URI: http://github.com/alnazer
 *Text Domain: payment-gateway-for-visa
