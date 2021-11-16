@@ -1,9 +1,13 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 /**
  * @package wc visa woocommerce
  * WC_Gateway_VISA_Connection for visa
 */
-class WC_Gateway_VISA_Connection {
+if(!class_exists("Alnazer_WC_Gateway_VISA_Connection")){
+class Alnazer_WC_Gateway_VISA_Connection {
   protected $curlObj;
 
   function __construct($merchantObj) {
@@ -85,18 +89,17 @@ class WC_Gateway_VISA_Connection {
 
 }
 
+}
 
 
-class WC_Gateway_VISA_Parser extends WC_Gateway_VISA_Connection {
+if(!class_exists("Alnazer_WC_Gateway_VISA_Parser")){
+class Alnazer_WC_Gateway_VISA_Parser extends Alnazer_WC_Gateway_VISA_Connection {
   function __construct($merchantObj) {
     // call parent ctor to init members
     parent::__construct($merchantObj);
   }
 
-  function __destruct() {
-    // call parent dtor to free resources
-    parent::__destruct();
-  }
+  
 
 	// [Snippet] howToConfigureURL - start
   // Modify gateway URL to set the version
@@ -140,5 +143,7 @@ class WC_Gateway_VISA_Parser extends WC_Gateway_VISA_Connection {
   }
   // [Snippet] howToConvertFormData - end
 }
+}
+
 
 ?>

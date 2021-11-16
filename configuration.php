@@ -3,7 +3,9 @@
  * @package wc visa woocommerce
  * configration for visa
 */
- 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 $configArray = array();
 
 /*
@@ -80,7 +82,9 @@ $configArray["debug"] = FALSE;
  This class holds all the merchant related variables and proxy 
  configuration settings	
 */
-class WC_Gateway_VISA_Merchant {
+if(!class_exists("Alnazer_WC_Gateway_VISA_Merchant")){
+
+class Alnazer_WC_Gateway_VISA_Merchant {
 	private $proxyServer = "";
 	private $proxyAuth = "";
 	private $proxyCurlOption = 0;
@@ -171,6 +175,7 @@ class WC_Gateway_VISA_Merchant {
 	public function SetMerchantId($merchantId) {$this->merchantId = $merchantId; }
 	public function SetPassword($password) { $this->password = $password; }
 	public function SetApiUsername($apiUsername) { $this->apiUsername = $apiUsername; }
+}
 }
 
 ?>

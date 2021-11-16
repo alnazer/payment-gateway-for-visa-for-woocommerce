@@ -1,12 +1,28 @@
 <html>
+
 <head>
     <title>اعادة توجية</title>
 </head>
+
 <body>
     <style>
         .main_card {
             text-align: center;
             margin-top: 100px;
+        }
+
+        .button-primary {
+            background: #2271b1;
+            border-color: #2271b1;
+            color: #fff;
+            text-decoration: none;
+            text-shadow: none;
+            padding: 10px 25px;
+            border-radius: 3rem;
+            border: solid #3e98e1 1px;
+            font-weight: bold;
+            font-family: Arial;
+            font-size: 1.1rem;
         }
     </style>
     <div class="main_card">
@@ -14,15 +30,34 @@
         <div class="card">
             <h2>جاري عملية المعالجة وإعادة التوجية فضلا إنتظر قليلاً</h2>
             <h2>Processing and redirection is in progress, please wait a moment</h2>
+            <input type="button" id="payBtn" style="display: none;margin: auto;" class="button-primary"
+                value="او اضغط هنا | or Click here" onclick="Checkout.showPaymentPage();" />
         </div>
     </div>
     <!-- Don't Change any code here -->
     <script type="text/javascript" src="{{checkoutUrl}}"
         data-error="{{get_site_url}}?wc-api={{error_link}}&order_id={{order_id}}&order_hash={{visa_order_id}}"
         data-cancel="{{get_site_url}}?wc-api={{cancel_link}}&order_id={{order_id}}&order_hash={{visa_order_id}}"
-        data-complete="{{get_site_url}}?wc-api={{responce_link}}&order_id={{order_id}}&order_hash={{visa_order_id}}">
+        data-complete="{{get_site_url}}?wc-api={{responce_link}}&order_id={{order_id}}&order_hash={{visa_order_id}}"
+        data-afterRedirect="restorePageState" data-beforeRedirect="getPageState">
+
         </script>
     <script type="text/javascript">
+        var callActionClick = true;
+        function restorePageState(data) {
+            callActionClick = false;
+            if (data.isBackFromRedirect == true) {
+                document.getElementById('payBtn').style.display = 'none';
+            }
+            //alert("restorePageState");
+            //set page state from data object
+        }
+        function getPageState() {
+            return {
+                isBackFromRedirect: true,
+            };
+        }
+
         Checkout.configure({
             merchant: '{{merchantId}}',
             order: {
@@ -49,11 +84,16 @@
                 id: '{{session_id}}',
             }
         });
-        //debugger;
-        Checkout.showPaymentPage();
+
+        if (callActionClick == true) {
+            document.getElementById('payBtn').style.display = 'block';
+            Checkout.showPaymentPage();
+            //console.log("click");
+        }
     </script>
-       <!--<input type="button" value="Pay with Lightbox" onclick="Checkout.showLightbox();" />
-       <input type="button" value="Pay with Payment Page" onclick="Checkout.showPaymentPage();" />-->
+
+    <!--<input type="button" value="Pay with Payment Page" onclick="Checkout.showPaymentPage();" />-->
     <!-- Don't Change any code here -->
 </body>
+
 </html>

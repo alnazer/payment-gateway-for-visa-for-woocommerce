@@ -47,7 +47,7 @@ msgid "This controls the description which the user sees during checkout."
 msgstr "يظهر للعميل كوصف اثناء انهاء عملية الدفع"
 
 #: index.php:
-msgid "Given by Visa for your Merchant Account."
+msgid "Given by VISA for your Merchant Account."
 msgstr "تقدمها الفيزا لحساب التاجر الخاص بك. "
 
 #: index.php:261
