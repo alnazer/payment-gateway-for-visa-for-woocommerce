@@ -68,8 +68,8 @@ msgstr "حدث خطأ "
 
 
 #: index.php:245
-msgid "Quantity"
-msgstr "الكمية"
+msgid "Order num"
+msgstr "طلب رقم"
 
 #: index.php:245
 msgid "Total"
@@ -78,3 +78,10 @@ msgstr "الاجمالي"
 #: index.php:369
 msgid "order not found"
 msgstr "لقد حددت طلب غير موجود"
+
+msgid "Complete Order Status"
+msgstr "حالة الطلب"
+
+msgid "The status to which the request is transferred upon successful payment by Visa"
+msgstr "الحالة التي يحول اليها الطلب عند نجاح الدفع بالفيزا"
+

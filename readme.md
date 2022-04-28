@@ -2,10 +2,10 @@
 Contributors: alnazer
 Tags: VISA, payment, kuwait, woocommerce , ecommerce, payment ,gateway
 Author: alnazer
-Tested up to: 5.8.2
-Tested in WooCommerce : 5.7.1
+Tested up to: 5.9.3
+Tested in WooCommerce : 6.4.1
 Requires PHP: 7.0
-Stable tag: 1.1.1
+Stable tag: 1.1.3
 License: MIT
 License URI: https://choosealicense.com/licenses/mit/
 
@@ -29,6 +29,10 @@ From merchant’s WordPress admin
 3. Click on Install Now
 4. Click on Activate
 
+## TEST CARD
+
+[https://ap.gateway.mastercard.com/api/documentation/integrationGuidelines/supportedFeatures/testAndGoLive.html?locale=en_US](https://ap.gateway.mastercard.com/api/documentation/integrationGuidelines/supportedFeatures/testAndGoLive.html?locale=en_US)
+
 ## Usage
 
 go to woocommerce setting in side menu and select tab payment and active VISA from list
@@ -38,22 +42,22 @@ You can add custom style for redirect page in redirect-page.html
 2-Don't make javascript code mistake it will stoped redirection
 3- Don't forget backup from page
 
-## support
-Eng hassan Attia | hassanaliksa@gmail.com | +96590033807
-
-
 ## Changelog
 
-== Changelog ==
-= 1.1.1 =
+=== 1.1.3 ===
 
-- make plugin curancy same woocomerce
-- fixed error in redirect page
+1. fixed call some classes error
 
-= 1.1.0 =
+=== 1.1.2 ===
 
-1. connect with last API version 61
-2. add select field for Interaction type in VISA setting fields
+1. fixed invoice descreption long length
+2. remove not kwd curnancy note
+3. add complete order status
+
+=== 1.1.1 ===
+
+4. connect with last API version 61
+5. add select field for Interaction type in VISA setting fields
 
 ## License
 
