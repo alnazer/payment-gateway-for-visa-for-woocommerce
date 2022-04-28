@@ -403,7 +403,7 @@ function woocommerce_wc_visa_init(){
 		}
 		private function getCommotionsValue($order){
 			if($this->commission > 0){
-				return $order->get_total()/(float) $this->commission;
+				return ($order->get_total() * (float) $this->commission)/100;
 			}
 			return 0;
 		}
