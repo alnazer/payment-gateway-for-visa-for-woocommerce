@@ -5,7 +5,7 @@ Author: alnazer
 Tested up to: 5.9.3
 Tested in WooCommerce : 6.4.1
 Requires PHP: 7.0
-Stable tag: 1.1.3
+Stable tag: 1.2.0
 License: MIT
 License URI: https://choosealicense.com/licenses/mit/
 
@@ -43,6 +43,13 @@ You can add custom style for redirect page in redirect-page.html
 3- Don't forget backup from page
 
 ## Changelog
+
+=== 1.2.0 ===
+
+1. add commission
+2. re order input fileds 
+3. Change input password type from text to password
+4. Display commission to payment method description 
 
 === 1.1.3 ===
 
