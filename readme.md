@@ -1,13 +1,12 @@
 ## Payment Gateway for VISA
-Contributors: alnazer
-Tags: VISA, payment, kuwait, woocommerce , ecommerce, payment ,gateway
-Author: alnazer
+
 Tested up to: 6.0.0
+
 Tested in WooCommerce : 6.8.0
+
 Requires PHP: 7.0
+
 Stable tag: 1.2.0
-License: MIT
-License URI: https://choosealicense.com/licenses/mit/
 
 ## Description
 
