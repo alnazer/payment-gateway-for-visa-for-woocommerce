@@ -1,21 +1,27 @@
-=== Payment Gateway for VISA ===
+## Payment Gateway for VISA
 Contributors: alnazer
 Tags: VISA, payment, kuwait, woocommerce , ecommerce, payment ,gateway
 Author: alnazer
-Tested up to: 5.9.3
-Tested in WooCommerce : 6.4.1
+Tested up to: 6.0.0
+Tested in WooCommerce : 6.8.0
 Requires PHP: 7.0
 Stable tag: 1.2.0
 License: MIT
 License URI: https://choosealicense.com/licenses/mit/
 
+## Description
+
 نساعدك في تطوير اعمالك الخاصه بتقديم الاضافة الجديد
 الخاصة بالدفع عن طريق بوابة ألفيزا بعد تحديثها
 وسع دائرة عملائك باتاحة امكانية الدفع عن طريق ألفيزا
-==========
+
 We help you to develop your business by introducing the new add-on
 For payment through the VISA portal, after it has been updated
 Expand your customers' circle by making the payment available via VISA
+
+## important note
+To activate 3-D Secure Authentication
+select 3-D Secure Authentication from the Payer Authentication dropdown in the Admin > Integration Settings page of the Merchant Administration user interface.
 
 ## Installation
 
@@ -44,6 +50,13 @@ You can add custom style for redirect page in redirect-page.html
 
 ## Changelog
 
+=== 1.3.0 ===
+
+1. add function to get order information
+2. upgrade api version to 66
+3. make some change in jhavascript configration in page redirect-page
+4. remove input interaction and set interaction opertation by default PURCHASE
+5. support 3DS2
 === 1.2.0 ===
 
 1. add commission
