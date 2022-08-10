@@ -4,7 +4,7 @@ Plugin Name: Payment Gateway for VISA
 Plugin URI: https://github.com/alnazer/payment-gateway-for-visa-for-woocommerce
 Description: This add-on offers you to expand your customer base with the ability to pay by Visa 
 Author: alnazer 
-Version: 1.2.0
+Version: 1.3.0
 Author URI: http://github.com/alnazer
 *Text Domain: wc_visa
 * Domain Path: /languages
@@ -43,7 +43,7 @@ function woocommerce_wc_visa_init(){
 		private $cancelUrl      = "";
 		private $errorUrl       = "";
 		private $responceUrl    = "" ;
-		private $version = 61;
+		private $version = 66;
 		private $language;
 		private $gatewayUrl;
 		private $is_test;
@@ -139,19 +139,19 @@ function woocommerce_wc_visa_init(){
 						"other"=> __('Other', 'wc_visa'),
 					]
 				),
-				'interaction'=>
+				/*'interaction'=>
 					array(
 						'title' => __("Interaction:", 'wc_visa'),
 						'type'=> 'select',
 						'description' => __('Indicates the operation that you wish to perform during the Hosted Checkout interaction', 'wc_visa'),
-						'default' => 'NONE',
+						'default' => 'PURCHASE',
 						'options'=>[
 							"AUTHORIZE"=> __('AUTHORIZE', 'wc_visa'),
 							"NONE"=> __('NONE', 'wc_visa'),
 							"PURCHASE"=> __('PURCHASE', 'wc_visa'),
 							"VERIFY"=> __('VERIFY', 'wc_visa'),
 						]
-					),
+					),*/
 				'complete_order_status'=> array(
 					'title' => __('Complete Order Status', 'wc_visa'),
 					'description' => __('The status to which the request is transferred upon successful payment by Visa', 'wc_visa'),
@@ -235,7 +235,7 @@ function woocommerce_wc_visa_init(){
 			// 2 = verify request hostname matches certificate hostname
 			$this->configArray["certificateVerifyHost"] = 0;
 			$this->configArray["gatewayUrl"] = $this->gatewayUrl;
-			$this->checkoutUrl = str_replace("api/nvp","checkout/version/".$this->version."/checkout.js",$this->gatewayUrl);
+			$this->checkoutUrl = str_replace("api/nvp","static/checkout/checkout.min.js",$this->gatewayUrl);
 			if($this->is_test == "yes")
 			{
 				// Merchant ID supplied by your payments provider
@@ -479,11 +479,12 @@ function woocommerce_wc_visa_init(){
 			$visa_order_id = $order_id."-".$this->rand;
 			$requestUrl = $parserObj->FormRequestUrl($merchantObj);
 			$request_assoc_array = array(
-				"apiOperation"=>"CREATE_CHECKOUT_SESSION",
+				"apiOperation"=>"INITIATE_CHECKOUT",
 				"order.id"=>$visa_order_id,
 				"order.amount"=> $this->getTotalAmount($order),
 				"order.currency"=>$this->currency,
-				"interaction.operation"=>$this->get_option('interaction'),
+				"order.description"=> $this->getOrderDescription($visa_order_id, $order),
+				"interaction.operation"=> "PURCHASE",
 			);
 
 			$request = $parserObj->ParseRequest($merchantObj, $request_assoc_array);
@@ -522,6 +523,18 @@ function woocommerce_wc_visa_init(){
 				return;
 			}
 		}
+
+		/**
+		 * create order description to visa
+		 */
+		private function getOrderDescription($order_id, $order){
+			$orderDesc = __('Order num','wc_visa')." : $order_id - ".__('Total','wc_visa')." : ".$order->get_total()." ".get_option('woocommerce_currency');
+			if($this->commission > 0){
+				$orderDesc.=" (+) Commotions ".$this->getCommotionsValue($order);
+			}
+			return $orderDesc;
+		}
+
 		/**
 		 * make request payment
 		 * return html code or error
@@ -538,20 +551,15 @@ function woocommerce_wc_visa_init(){
 			$order_id = $this->getOrderId();
 			$visa_order_id = $this->getOrderHash();
 			/*echo "<pre>";
-			print_r([
+			$this->dd([
 				$visa_order_id,
 				$_REQUEST
 			]);
-			die;*/
+			*/
 			$order = new WC_Order( $order_id );
 			if($order_id && $order){
 
 				$template = file_get_contents(plugin_dir_path(__FILE__)."redirect-page.html");
-				$orderDesc = __('Order num','wc_visa')." : $order_id - ".__('Total','wc_visa')." : ".$order->get_total()." ".get_option('woocommerce_currency');
-
-				if($this->commission > 0){
-					$orderDesc.=" (+) Commotions ".$this->getCommotionsValue($order);
-				}
 
 				$repalce = [
 					"{{logo}}" => str_replace("http://","https://",$this->logo),
@@ -559,7 +567,7 @@ function woocommerce_wc_visa_init(){
 					"{{merchantId}}" => $this->configArray["merchantId"],
 					"{{total}}" => $this->getTotalAmount($order),
 					"{{currency}}" => $this->currency,
-					"{{product_name}}" => $orderDesc,
+					"{{product_name}}" => $this->getOrderDescription($order_id, $order),
 					"{{order_id}}" => $order_id,
 					"{{visa_order_id}}" => $visa_order_id,
 					"{{reference}}" => $this->paymentid,//$this->getSession('visa_payment_id'),
@@ -567,6 +575,8 @@ function woocommerce_wc_visa_init(){
 					"{{session_id}}"=>  $this->getSession('session.id'),
 					"{{checkoutUrl}}" => $this->checkoutUrl,
 					'{{language}}' => $this->language,
+					'{{operation}}' => "PURCHASE",
+					'{{order_date}}' => date("Y-m-d"),
 					'{{cancel_link}}' => $this->cancelUrl,
 					'{{error_link}}' => $this->errorUrl,
 					'{{responce_link}}' => $this->responceUrl,
@@ -637,18 +647,18 @@ function woocommerce_wc_visa_init(){
 				$merchantObj = new Alnazer_WC_Gateway_VISA_Merchant($this->configArray);
 				$parserObj = new Alnazer_WC_Gateway_VISA_Parser($merchantObj);
 				$requestUrl = $parserObj->FormRequestUrl($merchantObj);
-				$request_assoc_array = array("apiOperation"=>"RETRIEVE_ORDER","order.id"=>$orderID);
+				$request_assoc_array = array("apiOperation"=>"RETRIEVE_ORDER","order.id"=>$orderID ,'merchant' => $this->get_option( 'merchantId' ));
 				$request = $parserObj->ParseRequest($merchantObj, $request_assoc_array);
 				$response = $parserObj->SendTransaction($merchantObj, $request);
 				$parsed_array = $this->parse_from_nvp($response);
-				/*echo "<pre>";
-				print_r([
+			 
+				/*$this->dd([
 					$visa_order_id,
 					$_REQUEST,
 					$parsed_array
-				]);
-				die;*/
-				if(!empty($parsed_array) && $parsed_array['result'] == 'SUCCESS'){
+				]);*/
+				 
+				if(!empty($parsed_array) && $parsed_array['result'] == 'SUCCESS' && $parsed_array['status'] === 'CAPTURED'){
 					wc_reduce_stock_levels( $order_id );
 
 					$order->update_status( $this->complete_order_status);
@@ -762,7 +772,12 @@ function woocommerce_wc_visa_init(){
 			return $result;
 
 		}
-
+		private function dd(...$data){
+			echo "<pre>";
+			print_r($data);
+			echo "</pre>";
+			die;
+		}
 		private function getLangList(){
 			return array(
 				'ab'=> 'Abkhazian',
@@ -981,4 +996,3 @@ function woocommerce_wc_visa_init(){
 	}
 	add_filter('woocommerce_payment_gateways', 'woocommerce_add_wc_visa_gateway' );
 }
-
