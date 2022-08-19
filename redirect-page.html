@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="{{language}}">
+
+<head>
+    <title>الدفع</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <style>
+        .main_card {
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        .card {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .button-primary {
+            background: #2271b1;
+            color: #fff;
+            text-decoration: none;
+            text-shadow: none;
+            padding: 10px 25px;
+            border-radius: 3rem;
+            border: #2271b1 solid 1px;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            font-size: 1.1rem;
+        }
+    </style>
+
+    <div class="main_card">
+        <div class="img" id="img"><img src="{{logo}}" style="max-width: 200px" /></div>
+        <div class="card">
+            <div id="visa-embed-target"> </div>
+            <div class="card">
+                <h2>جاري عملية المعالجة وإعادة التوجية فضلا إنتظر قليلاً</h2>
+                <h2>Processing and redirection is in progress, please wait a moment</h2>
+                <input type="button" id="payBtn" style="display: none;margin: auto;" class="button-primary"
+                       value="او اضغط هنا | or Click here" onclick="Checkout.showPaymentPage();" />
+            </div>
+        </div>
+    </div>
+    <!-- Don't Change any code here -->
+    <script type="text/javascript" src="{{checkoutUrl}}"
+        data-error="{{get_site_url}}?wc-api={{error_link}}&order_id={{order_id}}&order_hash={{visa_order_id}}"
+        data-cancel="{{get_site_url}}?wc-api={{cancel_link}}&order_id={{order_id}}&order_hash={{visa_order_id}}"
+        data-complete="{{get_site_url}}?wc-api={{responce_link}}&order_id={{order_id}}&order_hash={{visa_order_id}}"
+        data-afterRedirect="restorePageState" data-beforeRedirect="getPageState">
+
+        </script>
+    <script type="text/javascript">
+        var callActionClick = true;
+        function restorePageState(data) {
+            callActionClick = false;
+            if (data.isBackFromRedirect == true) {
+                document.getElementById('payBtn').style.display = 'none';
+            }
+            //alert("restorePageState");
+            //console.log("data", data);
+            //set page state from data object
+        }
+        function getPageState() {
+            return {
+                isBackFromRedirect: true,
+            };
+        }
+
+        Checkout.configure({
+            merchant: '{{merchantId}}',
+            order: {
+                custom: {
+                    amount: '{{total}}',
+                    currency: '{{currency}}',
+                    reference: '{{reference}}',
+                },
+                description: '{{product_name}}',
+                id: '{{visa_order_id}}',
+                invoiceNumber: '{{reference}}',
+                customerOrderDate: '{{order_date}}',
+                customerReference: '{{reference}}',
+            },
+            interaction: {
+                merchant: {
+                    name: '{{blogname}}',
+                    logo: '{{logo}}',
+                },
+                locale: '{{language}}',
+                displayControl: {
+                    billingAddress: 'HIDE',
+                    shipping: 'HIDE',
+                    customerEmail: 'HIDE',
+                },
+                operation: '{{operation}}'
+            },
+            session: {
+                id: '{{session_id}}',
+            }
+        });
+
+        if (callActionClick == true) {
+            document.getElementById('payBtn').style.display = 'block';
+            Checkout.showPaymentPage();
+            //Checkout.showEmbeddedPage('#visa-embed-target');
+        }
+    </script>
+    <!-- Don't Change any code here -->
+</body>
+
+</html>
